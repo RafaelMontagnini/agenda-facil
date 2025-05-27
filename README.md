@@ -13,11 +13,12 @@ Projeto desenvolvido em PHP com PDO para conexão ao MySQL e Bootstrap 5 no fron
 
 1. Clone o repositório:
 
-git clone https://github.com/RafaelMontagnini/agenda-facil.git
+    - git clone https://github.com/RafaelMontagnini/agenda-facil.git
 
 
 2. Coloque o projeto na pasta htdocs do XAMPP:
- C:/xampp/htdocs/AgendaFacil
+
+    - C:/xampp/htdocs/AgendaFacil
 
 3. Importe o banco de dados:
 
@@ -30,18 +31,18 @@ git clone https://github.com/RafaelMontagnini/agenda-facil.git
 
  - http://localhost/AgendaFacil
 
-🔗 API
-    Endpoint: http://localhost/AgendaFacil/api/agendamentos.php
+## API
+    - Endpoint: http://localhost/AgendaFacil/api/agendamentos.php
 
-    Método: GET
+    - Método: GET
 
-    Headers (Obrigatório):
-    Authorization: rafael123
+    - Headers (Obrigatório):
+      Authorization: rafael123
 
-🛠 Tecnologias Utilizadas
-    PHP + PDO
-    Bootstrap 5
-    MySQL
-    XAMPP
-    Postman (para testes)
-    Desenvolvido por Rafael Montagnini
+## Tecnologias Utilizadas
+    - PHP + PDO
+    - Bootstrap 5
+    - MySQL
+    - XAMPP
+    - Postman (para testes)
+    - Desenvolvido por Rafael Montagnini
