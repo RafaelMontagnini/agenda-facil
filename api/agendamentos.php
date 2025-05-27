@@ -1,22 +1,25 @@
 <?php
 header('Content-Type: application/json');
 
-// Token fixo
-$token = 'rafael123'; 
-
 $headers = getallheaders();
 $tokenRecebido = isset($headers['Authorization']) ? trim($headers['Authorization']) : '';
-
-if ($tokenRecebido !== $token) {
-    http_response_code(401);
-    echo json_encode(['erro' => 'Token inválido ou ausente']);
-    exit;
-}
 
 try {
     $conn = new PDO('mysql:host=localhost;dbname=agenda_facil', 'root', '');
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Verifica se o token existe no banco
+    $stmtToken = $conn->prepare("SELECT COUNT(*) FROM api_tokens WHERE token = :token");
+    $stmtToken->bindParam(':token', $tokenRecebido);
+    $stmtToken->execute();
+
+    if ($stmtToken->fetchColumn() == 0) {
+        http_response_code(401);
+        echo json_encode(['erro' => 'Token inválido ou ausente']);
+        exit;
+    }
+
+    // Se token ok, roda a query dos pacientes
     $query = "
         SELECT
             T1.id, 

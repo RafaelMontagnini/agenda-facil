@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 27-Maio-2025 às 21:24
+-- Tempo de geração: 27-Maio-2025 às 22:32
 -- Versão do servidor: 10.4.25-MariaDB
 -- versão do PHP: 8.1.10
 
@@ -46,6 +46,24 @@ INSERT INTO `agendamentos` (`id`, `medico_id`, `paciente_id`, `data_consulta`, `
 (2, 2, 2, '2025-05-29', '16:00:00', 'Outra observação', '2025-05-27 00:00:00', '2025-05-27 00:00:00'),
 (3, 2, 4, '2025-05-30', '11:00:00', 'observação do paciente', '2025-05-27 00:00:00', '2025-05-27 00:00:00'),
 (4, 4, 5, '2025-05-28', '14:00:00', 'Verificando', '2025-05-27 00:00:00', '2025-05-27 00:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `api_tokens`
+--
+
+CREATE TABLE `api_tokens` (
+  `id` int(11) NOT NULL,
+  `token` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `api_tokens`
+--
+
+INSERT INTO `api_tokens` (`id`, `token`) VALUES
+(1, 'rafael123');
 
 -- --------------------------------------------------------
 
@@ -113,6 +131,12 @@ ALTER TABLE `agendamentos`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Índices para tabela `api_tokens`
+--
+ALTER TABLE `api_tokens`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Índices para tabela `medicos`
 --
 ALTER TABLE `medicos`
@@ -133,6 +157,12 @@ ALTER TABLE `pacientes`
 --
 ALTER TABLE `agendamentos`
   MODIFY `id` int(7) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de tabela `api_tokens`
+--
+ALTER TABLE `api_tokens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `medicos`
