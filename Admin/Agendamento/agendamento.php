@@ -11,7 +11,6 @@ if ((!isset($_SESSION['id'])) and (!isset($_SESSION['usuario']))) {
 $selectedMenu = 'paciente';
 ?>
 
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -39,7 +38,6 @@ $selectedMenu = 'paciente';
 </style>
 
 <body>
-
     <!-- ========================= Alerts ==================== -->
     <?php
     if (isset($_SESSION['success_message'])) {
@@ -63,111 +61,146 @@ $selectedMenu = 'paciente';
             <h5></h5>
         </div>
 
-
         <!-- ======================= Cards ================== -->
         <div class="app_container mt-4">
             <div class="container">
-                <div class="card shadow rounded-4">
-                    <div style="background-color: #10303d;"
-                        class="card-header text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Agendamentos Médico</h5>
-                        <button class="btn btn-light btn-sm" onclick="abrirModalNovo()">
-                            <ion-icon name="add-circle-outline"></ion-icon> Novo Agendamento
-                        </button>
-                    </div>
+                <div class="d-flex justify-content-start mb-3">
+                    <button class="btn btn-success" onclick="abrirModalNovo()">
+                        <ion-icon name="add-circle-outline"></ion-icon> Novo Agendamento
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow rounded-4 mb-4">
+                            <div style="background-color: #00796b;" class="card-header text-white">
+                                <h5 class="mb-0">Agendamentos de Hoje</h5>
+                            </div>
+                            <?php
+                            $id_medico = $_SESSION['id'];
+                            $data_hoje = date('Y-m-d');
 
-                    <?php
+                            $queryHoje = "SELECT T1.id, T2.nome, T1.data_consulta, T1.hora_consulta, T2.celular
+                                        FROM agendamentos T1
+                                        LEFT JOIN pacientes T2 ON T2.id = T1.paciente_id
+                                        WHERE T1.medico_id = :id_medico AND T1.data_consulta = :data_hoje
+                                        ORDER BY T1.hora_consulta ASC";
 
-                    $id_medico = $_SESSION['id'];
-
-                    $query = "SELECT 
-                            T1.id,
-                            T2.nome,
-                            T1.data_consulta,
-                            T1.hora_consulta,
-                            T2.celular
-                        FROM 
-                            agendamentos T1 LEFT JOIN pacientes T2 ON T2.id = T1.paciente_id
-                                            LEFT JOIN medicos T3 ON T3.id = T1.medico_id
-                        WHERE
-                            T1.medico_id = :id_medico
-                        ORDER BY
-                            T1.data_consulta ASC, T1.hora_consulta ASC
-                        
-                        ";
-
-                    $agendamento = $conn->prepare($query);
-                    $agendamento->bindParam(':id_medico', $id_medico, PDO::PARAM_INT);
-                    $agendamento->execute();
-
-                    ?>
-
-                    <div class="card-body table-responsive">
-                        <table class="table table-hover align-middle text-center">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Paciente</th>
-                                    <th>Data</th>
-                                    <th>Horário</th>
-                                    <th>Contato</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabela-agendamentos">
-                                <?php if ($agendamento->rowCount() > 0): ?>
-                                    <?php while ($data = $agendamento->fetch(PDO::FETCH_ASSOC)): ?>
+                            $stmtHoje = $conn->prepare($queryHoje);
+                            $stmtHoje->bindParam(':id_medico', $id_medico);
+                            $stmtHoje->bindParam(':data_hoje', $data_hoje);
+                            $stmtHoje->execute();
+                            ?>
+                            <div class="card-body table-responsive">
+                                <table class="table table-hover align-middle text-center">
+                                    <thead class="table-light">
                                         <tr>
-                                            <td><?= $data['nome'] ?></td>
-                                            <td><?= date('d/m/Y', strtotime($data['data_consulta'])) ?></td>
-                                            <td><?= $data['hora_consulta'] ?></td>
-                                            <td><?= $data['celular'] ?></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary me-2" onclick="editarAgendamento(
-                                                    <?= $data['id'] ?>,
-                                                    '<?= $data['nome'] ?>',
-                                                    '<?= $data['data_consulta'] ?>',
-                                                    '<?= $data['hora_consulta'] ?>',
-                                                    '<?= $data['celular'] ?>'
-                                                )">
-                                                    <ion-icon name="create-outline"></ion-icon>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger"
-                                                    onclick="excluirAgendamento(<?= $data['id'] ?>)">
-                                                    <ion-icon name="trash-outline"></ion-icon>
-                                                </button>
-                                            </td>
+                                            <th>Paciente</th>
+                                            <th>Horário</th>
+                                            <th>Contato</th>
+                                            <th>Ações</th>
                                         </tr>
-                                    <?php endwhile; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="5" class="text-center">Nenhum agendamento encontrado.</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                                    </thead>
+                                    <tbody>
+                                        <?php if ($stmtHoje->rowCount() > 0): ?>
+                                            <?php while ($data = $stmtHoje->fetch(PDO::FETCH_ASSOC)): ?>
+                                                <tr>
+                                                    <td><?= $data['nome'] ?></td>
+                                                    <td><?= $data['hora_consulta'] ?></td>
+                                                    <td><?= $data['celular'] ?></td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-primary me-2"
+                                                            onclick="editarAgendamento(<?= $data['id'] ?>, '<?= $data['nome'] ?>', '<?= $data['data_consulta'] ?>', '<?= $data['hora_consulta'] ?>', '<?= $data['celular'] ?>')">
+                                                            <ion-icon name="create-outline"></ion-icon>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger"
+                                                            onclick="excluirAgendamento(<?= $data['id'] ?>)">
+                                                            <ion-icon name="trash-outline"></ion-icon>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            <?php endwhile; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="4">Nenhum agendamento para hoje.</td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow rounded-4">
+                            <div style="background-color: #10303d;"
+                                class="card-header text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Próximos Agendamentos</h5>
+                            </div>
+
+                            <?php
+                            $query = "SELECT T1.id, T2.nome, T1.data_consulta, T1.hora_consulta, T2.celular
+                                    FROM agendamentos T1
+                                    LEFT JOIN pacientes T2 ON T2.id = T1.paciente_id
+                                    WHERE T1.medico_id = :id_medico AND T1.data_consulta > :data_hoje
+                                    ORDER BY T1.data_consulta ASC, T1.hora_consulta ASC";
+
+                            $agendamento = $conn->prepare($query);
+                            $agendamento->bindParam(':id_medico', $id_medico);
+                            $agendamento->bindParam(':data_hoje', $data_hoje);
+                            $agendamento->execute();
+                            ?>
+
+                            <div class="card-body table-responsive">
+                                <table class="table table-hover align-middle text-center">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Paciente</th>
+                                            <th>Data</th>
+                                            <th>Horário</th>
+                                            <th>Contato</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabela-agendamentos">
+                                        <?php if ($agendamento->rowCount() > 0): ?>
+                                            <?php while ($data = $agendamento->fetch(PDO::FETCH_ASSOC)): ?>
+                                                <tr>
+                                                    <td><?= $data['nome'] ?></td>
+                                                    <td><?= date('d/m/Y', strtotime($data['data_consulta'])) ?></td>
+                                                    <td><?= $data['hora_consulta'] ?></td>
+                                                    <td><?= $data['celular'] ?></td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-primary me-2"
+                                                            onclick="editarAgendamento(<?= $data['id'] ?>, '<?= $data['nome'] ?>', '<?= $data['data_consulta'] ?>', '<?= $data['hora_consulta'] ?>', '<?= $data['celular'] ?>')">
+                                                            <ion-icon name="create-outline"></ion-icon>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger"
+                                                            onclick="excluirAgendamento(<?= $data['id'] ?>)">
+                                                            <ion-icon name="trash-outline"></ion-icon>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            <?php endwhile; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="5">Nenhum agendamento encontrado.</td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- MODAL NOVO PACIENTE -->
             <?php include 'modalNovoAgendamento.php'; ?>
-
-            <!-- MODAL EDITA PACIENTE  -->
             <?php include 'modalEditaAgendamento.php'; ?>
-
-            <!-- MODAL EXCLUI PACIENTE -->
             <?php include 'modalExcluiAgendamento.php'; ?>
-
         </div>
-
-    </div>
     </div>
 
-    <!-- =========== Scripts =========  -->
     <script src="../assets/js/main.js"></script>
-
     <script>
-
         function abrirModalNovo() {
             var modal = new bootstrap.Modal(document.getElementById('modalNovoAgendamento'));
             modal.show();
@@ -195,13 +228,10 @@ $selectedMenu = 'paciente';
             const id = document.getElementById('delete-id').value;
             window.location.href = "modelAgendamento.php?deleteAgendamento=" + id;
         }
-
     </script>
 
-    <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
         integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
         crossorigin="anonymous"></script>

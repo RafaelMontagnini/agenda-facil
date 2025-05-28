@@ -32,6 +32,15 @@
             </a>
         </li>
 
+        <li class="<?php echo ($selectedMenu == 'configuracao') ? 'hovered' : ''; ?>">
+            <a href="../Configuracao/configuracao.php">
+                <span class="icon">
+                    <ion-icon name="settings"></ion-icon>
+                </span>
+                <span class="title">Configurações</span>
+            </a>
+        </li>
+
         <li>
             <a href="../../sair.php">
                 <span class="icon">
