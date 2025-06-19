@@ -295,7 +295,7 @@ $selectedMenu = 'paciente';
                                 <th>CPF</th>
                                 <th>Celular</th>
                                 <th>Email</th>
-                                <th>Data Nasciemento</th>
+                                <th>Data Nascimento</th>
                                 <th>Sexo</th>
                                 <th>Ações</th>
                             </tr>

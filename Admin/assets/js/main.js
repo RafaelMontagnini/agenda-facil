@@ -22,12 +22,6 @@ toggle.onclick = function () {
 };
 
 
-
-
-// -------- Metodos da TELA: infoClients.php -------------
-
-
-//Colappse das opções SERVIÇOS e FINANCEIRO
 document.getElementById("collapse-link").addEventListener("click", function() {
   var icon = document.getElementById("collapse-icon");
   if (icon.getAttribute("name") === "arrow-down-outline") {
@@ -53,8 +47,6 @@ document.getElementById("collapse-activity").addEventListener("click", function(
   }
 });
 
-
-// -------- Metodos da TELA: addClients.php -------------
 
 function buscarEndereco() {
   var cep = document.getElementById('id_cepCliente').value;
