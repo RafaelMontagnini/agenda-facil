@@ -2,6 +2,7 @@
 session_start();
 ob_start();
 include_once '../../conexao.php';
+date_default_timezone_set('America/Sao_Paulo');
 
 if ((!isset($_SESSION['id'])) and (!isset($_SESSION['usuario']))) {
     header("Location: ../../index.php");
